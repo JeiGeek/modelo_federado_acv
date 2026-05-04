@@ -1,0 +1,35 @@
+# POSMACV/environment.yml
+# Crear  : conda env create -f environment.yml
+# Activar: conda activate acv_env
+
+name: acv_env
+
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python=3.10
+  - numpy=1.26
+  - scipy=1.12
+  - scikit-image=0.22
+  - matplotlib=3.8
+  - seaborn=0.13
+  - scikit-learn
+  - opencv
+  - tqdm=4.66
+
+  - pytorch=2.2
+  - torchvision=0.17
+  - pytorch-cuda=11.8
+
+  - jupyterlab=4.1
+  - ipykernel=6.29
+  - ipywidgets=8.1
+
+  - pip
+  - pip:
+    - nibabel==5.2.0
+    - albumentations==1.4.0
