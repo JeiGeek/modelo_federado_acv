@@ -9,3 +9,7 @@ federado/__pycache__/
 
 # Ignorar archivo específico
 Channel Attention.docx
+Propuesta federada.docx
+
+# Ignorar gitignore
+.gitignore
