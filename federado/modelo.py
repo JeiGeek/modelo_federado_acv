@@ -54,7 +54,7 @@ class CBAM(nn.Module):
         return x
 
 #########################################################################################################
-
+'''
 # Resnet18 + CBAM
 class ResNet18CBAM(nn.Module):
     def __init__(self):
@@ -93,8 +93,42 @@ class ResNet18CBAM(nn.Module):
         x = self.avgpool(x).squeeze(-1).squeeze(-1)
         x = self.fc(x)
         return x
+'''
+
+class ResNet18Base(nn.Module):
+    def __init__(self):
+        super().__init__()
+
+        base = resnet18(weights=None)
+
+        # Modificamos la primera capa: 3 canales - 2 canales
+        base.conv1 = nn.Conv2d(2, 64, kernel_size=7, stride=2, padding=3, bias=False)
+
+        self.conv1   = base.conv1
+        self.bn1     = base.bn1
+        self.relu    = base.relu
+        self.maxpool = base.maxpool
+
+        self.layer1  = base.layer1
+        self.layer2  = base.layer2
+        self.layer3  = base.layer3
+        self.layer4  = base.layer4
+
+        self.avgpool = nn.AdaptiveAvgPool2d(1)
+        self.fc      = nn.Linear(512, 1)
+
+    def forward(self, x):
+        x = self.maxpool(self.relu(self.bn1(self.conv1(x))))
+        x = self.layer1(x)
+        x = self.layer2(x)
+        x = self.layer3(x)
+        x = self.layer4(x)
+        x = self.avgpool(x).squeeze(-1).squeeze(-1)
+        x = self.fc(x)
+        return x
 
 #########################################################################################################
 
 def crear_modelo():
-    return ResNet18CBAM()
+    #return ResNet18CBAM()
+    return ResNet18Base()
