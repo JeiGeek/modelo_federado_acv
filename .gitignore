@@ -1,0 +1,13 @@
+# Ignorar carpeta de imágenes
+imagenes/
+
+# Ignorar salida de preprocesamiento
+preprocesamiento/output/
+
+# Ignorar cache de Python
+federado/__pycache__/
+federado/pesos/
+
+# Ignorar archivo específico
+Channel Attention.docx
+Propuesta federada.docx
