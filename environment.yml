@@ -20,6 +20,7 @@ dependencies:
   - scikit-learn
   - opencv
   - tqdm=4.66
+  - opencv-python=4.8
 
   - pytorch=2.2
   - torchvision=0.17
