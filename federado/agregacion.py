@@ -68,43 +68,46 @@ def fedavg_adaptativo(pesos_centros, muestras_centros, val_losses_anteriores, va
     return pesos_globales
 
 #########################################################################################################
-def q_fedavg(pesos_centros, pesos_efectivos):
+def q_fedavg(pesos_centros, q_weights):
     """
-    Realiza la agregación de q-FedAvg utilizando los pesos efectivos 
-    calculados previamente en el script de entrenamiento.
+    Agregación q-FedAvg usando pesos pre-calculados (n / loss^q).
     """
-    # 1. Calculamos la suma total de los pesos efectivos para normalizar
-    suma_pesos = sum(pesos_efectivos)
-    
-    # 2. Inicializamos el modelo global con ceros siguiendo la estructura del primer centro
+    suma_pesos = sum(q_weights)
     pesos_globales = copy.deepcopy(pesos_centros[0])
+    
+    # Inicializar en cero
     for key in pesos_globales:
         pesos_globales[key] = torch.zeros_like(pesos_globales[key], dtype=torch.float32)
-
-<<<<<<< HEAD
-    # 3. Agregación ponderada
-    for pesos_locales, w_efectivo in zip(pesos_centros, pesos_efectivos):
-        # Proporción basada en el peso efectivo (n y loss combinados)
-        proporcion = w_efectivo / (suma_pesos + 1e-10) 
         
+    # Promedio ponderado por el peso efectivo q
+    for pesos, w_q in zip(pesos_centros, q_weights):
+        proporcion = w_q / (suma_pesos + 1e-10)
         for key in pesos_globales:
-            # Acumulamos el aporte del centro multiplicado por su peso
-            pesos_globales[key] += pesos_locales[key].float() * proporcion
-
+            pesos_globales[key] += pesos[key].float() * proporcion
+            
     return pesos_globales
-def agregar_pesos(pesos_centros: list, pesos_efectivos: list):
+
+def agregar_pesos(pesos_centros, muestras_centros, 
+                  val_losses_anteriores=None, val_losses_nuevos=None, 
+                  q_weights=None):
     """
-    Función puente que llama a q-FedAvg. 
-   	"""
-    return q_fedavg(pesos_centros, pesos_efectivos)
-=======
-def agregar_pesos(pesos_centros, muestras_centros,
-                  val_losses_anteriores=None, val_losses_nuevos=None):
+    Agregador dinámico:
+    1. Si se pasan q_weights, usa q_fedavg.
+    2. Si se pasan losses, usa fedavg_adaptativo.
+    3. Por defecto, usa fedavg (promedio por muestras).
     """
-    Si se pasan val_losses usa fedavg_adaptativo.
-    Si no, usa fedavg normal.
-    """
+    
+    # Prioridad 1: q-FedAvg (Usa los pesos efectivos calculados con la pérdida y q)
+    if q_weights is not None:
+        print(" -> Usando agregación: q-FedAvg")
+        return q_fedavg(pesos_centros, q_weights)
+    
+    # Prioridad 2: FedAvg Adaptativo (Basado en la evolución de la pérdida)
     if val_losses_anteriores is not None and val_losses_nuevos is not None:
-        return fedavg_adaptativo(pesos_centros, muestras_centros, val_losses_anteriores, val_losses_nuevos)
+        print(" -> Usando agregación: FedAvg Adaptativo")
+        return fedavg_adaptativo(pesos_centros, muestras_centros, 
+                                 val_losses_anteriores, val_losses_nuevos)
+    
+    # Prioridad 3: FedAvg Estándar (Promedio ponderado simple por n)
+    print(" -> Usando agregación: FedAvg Estándar")
     return fedavg(pesos_centros, muestras_centros)
->>>>>>> main
