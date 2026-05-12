@@ -6,8 +6,12 @@ preprocesamiento/output/
 
 # Ignorar cache de Python
 federado/__pycache__/
+
+# Ignorar pesos de modelos
 federado/pesos/
 procesamiento/modelos/
+post-federado/adaptadores
+federado/ditto_pesos/
 
 # Ignorar archivo específico
 Channel Attention.docx

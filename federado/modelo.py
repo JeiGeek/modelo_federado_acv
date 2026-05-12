@@ -54,7 +54,7 @@ class CBAM(nn.Module):
         return x
 
 #########################################################################################################
-'''
+
 # Resnet18 + CBAM
 class ResNet18CBAM(nn.Module):
     def __init__(self):
@@ -93,8 +93,6 @@ class ResNet18CBAM(nn.Module):
         x = self.avgpool(x).squeeze(-1).squeeze(-1)
         x = self.fc(x)
         return x
-'''
-
 class ResNet18Base(nn.Module):
     def __init__(self):
         super().__init__()
@@ -130,5 +128,5 @@ class ResNet18Base(nn.Module):
 #########################################################################################################
 
 def crear_modelo():
-    #return ResNet18CBAM()
-    return ResNet18Base()
+    return ResNet18CBAM()
+    #return ResNet18Base()
