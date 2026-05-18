@@ -6,9 +6,20 @@ preprocesamiento/output/
 
 # Ignorar cache de Python
 federado/__pycache__/
+federado - EfficentB0/__pycache__/
 
 # Ignorar pesos de modelos
 federado/pesos/
+federado/pesos_sin_head/
+federado/probabilidades_center_5
+federado/ditto_pesos/
+
+federado - EfficentB0/pesos/
+federado - EfficentB0/pesos_sin_head/
+federado - EfficentB0/ditto_pesos/
+federado - EfficentB0/probabilidades_center_5_ditto
+federado - EfficentB0/probabilidades
+
 procesamiento/modelos/
 post-federado/adaptadores
 federado/ditto_pesos/

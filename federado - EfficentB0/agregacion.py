@@ -34,6 +34,39 @@ def fedavg(pesos_centros: list, muestras_centros: list):
 
     return pesos_globales
 
+
+# FedAvg adaptativo: pondera por número de muestras y mejora relativa en validación
+
+def fedavg_adaptativo(pesos_centros, muestras_centros, val_losses_anteriores, val_losses_nuevos, eps=1e-8):
+    """
+    Agregación ponderada por datos + mejora relativa.
+    
+    Δk = (val_old - val_new) / (val_old + ε)
+    Ik = √nk × (1 + Δk)
+    αk = Ik / ΣIj
+    """
+
+    importancias = []
+
+    for n, val_old, val_new in zip(muestras_centros, val_losses_anteriores, val_losses_nuevos):
+        delta = (val_old - val_new) / (val_old + eps)
+        ik    = math.sqrt(n) * (1 + delta)
+        importancias.append(ik)
+
+    total = sum(importancias)
+
+    # Pesos normalizados
+    pesos_globales = copy.deepcopy(pesos_centros[0])
+    for key in pesos_globales:
+        pesos_globales[key] = torch.zeros_like(pesos_globales[key], dtype=torch.float32)
+
+    for pesos, alpha in zip(pesos_centros, importancias):
+        alpha_norm = alpha / total
+        for key in pesos_globales:
+            pesos_globales[key] += pesos[key].float() * alpha_norm
+
+    return pesos_globales
+
 #########################################################################################################
 
 def agregar_pesos(pesos_centros, muestras_centros,
